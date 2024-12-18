@@ -1,0 +1,63 @@
+\documentclass[12pt]{extarticle}
+%%%%%
+%%%%%
+\usepackage[a4paper, top=!!TOPMARGIN, bottom=!!BOTTOMMARGIN, left=!!LEFTMARGIN, right=!!RIGHTMARGIN]{geometry}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%PARA PONER ENCABEZADOS Y PIES DE PAGINA EN TODAS LAS HOJAS%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr} % Cargar el paquete
+
+\pagestyle{fancy} % Activar el estilo fancy
+\fancyhf{} % Limpiar encabezados y pies de página
+
+% Definir el encabezado
+\fancyhead[L]{!!LEFTHEADER} % Encabezado izquierdo
+\fancyhead[C]{!!CENTRALHEADER} % Encabezado central
+\fancyhead[R]{!!CODE}      % Encabezado derecho
+
+% Opcional: Pie de página
+\fancyfoot[C]{\thepage}
+%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%
+\usepackage{lipsum}
+%para enumerar con a,b,c.. usando la opcion
+\usepackage{enumitem}
+%Para tema de que sea en catalan:
+\usepackage[T1]{fontenc}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage[catalan]{babel} 
+%se necesita instalar:
+%sudo apt install texlive-lang-spanish
+%sudo apt install texlive-lang-other
+%%%%%
+%%%%%
+\usepackage{setspace}
+
+\begin{document}
+
+\begin{center}
+\Large
+!!TITLE1
+
+!!TITLE2
+
+\large
+!!DATE
+\small
+\end{center}	
+\vspace{1mm}
+\singlespacing
+!!INSTRUCTIONS
+\begin{enumerate}
+
+!!QUESTIONS
+ 
+\end{enumerate}
+
+\end{document}
+
