@@ -73,13 +73,14 @@ def shuffle_df(df:pd.DataFrame,randomSeed:int):
     return df 
 
 # Function to generate the latex code for an exam from:
+# - numberOfquestions: number of questions
 # - dataframe: pandas dataframe with the exam information
 # - tex: string with the latex template,
 # - format: string with the format specifications,
 # - randomSeed: random seed for the shuffling process,
 # using randomSeed for randomizing questions and answers
 # returns the tex code as a string
-def csvToTex(dataframe:pd.DataFrame, tex:str, format:str, randomSeed:int):
+def csvToTex(numberOfquestions:int, dataframe:pd.DataFrame, tex:str, format:str, randomSeed:int):
     
     # make a copy in memory of the main dataframe
     df = dataframe.copy()
@@ -89,7 +90,11 @@ def csvToTex(dataframe:pd.DataFrame, tex:str, format:str, randomSeed:int):
     
     # Generate latex code from dataframe rows
     questions_tex = '\n'
+    n = 0
     for index, row in df.iterrows():
+        if n == numberOfquestions:
+            break
+        n += 1
         questions_tex = questions_tex + r'\item ' + str(row['question']) + '\n' + r'\begin{enumerate}[label=\alph*)]' + '\n'
         for answer in row[1:-1]:
             questions_tex = questions_tex + r'\item ' + str(answer) + '\n'
@@ -133,11 +138,12 @@ def textToPdf(tex:str, pdfname:str):
 
 # function to generate a pdf file with n exams. Each exam has a random order in questions and answers.
 # Input:
+# - numberOfquestions: number of questions
 # - n: the number of files to generate
 # - examCSV: the exam csv file
 # - examFormatTXT: text file with the format (headers, title, etc.)
 # - templateTEX: the template latex file
-def csv_to_n_exams_pdf(n:int, examCSV:str, examFormatTXT:str, templateTEX:str, examsPDF:str):
+def csv_to_n_exams_pdf(numberOfquestions:int, n:int, examCSV:str, examFormatTXT:str, templateTEX:str, examsPDF:str):
     # exam csv file to dataframe and normalizing correct column
     df = exam_to_df(examCSV)
     # file main.tex to string
@@ -154,7 +160,7 @@ def csv_to_n_exams_pdf(n:int, examCSV:str, examFormatTXT:str, templateTEX:str, e
     # Creates a PdfWriter object for the final file
     pdf_writer = PdfWriter()
     for i in range(n):
-        texFull = csvToTex(df, tex, format, random.randint(0,999999))
+        texFull = csvToTex(numberOfquestions, df, tex, format, random.randint(0,999999))
         filename = 'aux.pdf'
         result = textToPdf(texFull,filename)
         if result.returncode == 0:
