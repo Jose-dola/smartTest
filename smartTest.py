@@ -215,6 +215,9 @@ def run_correction(examCSV, answersCSV, codeColumn, firstAnswerColumn, scoredAns
     # making the correction
     scores_penal = []
     scores_no_penal = []
+    numberOfGoodAnswers = []
+    numberOfWrongAnswers = []
+    numberOfBlankAnswers = []
     for index, row in df_answers.iterrows():
         df_exam_shuffled = shuffle_df(df_exam, int(row.iloc[codeColumn-1]))
         goodAnswers = 0
@@ -229,8 +232,14 @@ def run_correction(examCSV, answersCSV, codeColumn, firstAnswerColumn, scoredAns
                 else:
                     badAnswers += 1 
             i+=1
+        numberOfGoodAnswers.append(goodAnswers)
+        numberOfWrongAnswers.append(badAnswers)
+        numberOfBlankAnswers.append(len(df_exam_shuffled)-goodAnswers-badAnswers)
         scores_penal.append(score_penalizing(goodAnswers, badAnswers, len(df_exam_shuffled), len(df_exam.columns)-2))
         scores_no_penal.append(score_no_penalizing(goodAnswers, len(df_exam_shuffled)))
+    df_answers.insert(len(df_answers.columns), 'number of good answers', numberOfGoodAnswers)
+    df_answers.insert(len(df_answers.columns), 'number of wrong answers', numberOfWrongAnswers)
+    df_answers.insert(len(df_answers.columns), 'number of blank answers', numberOfBlankAnswers)
     df_answers.insert(0, 'score_no_penalizing', scores_no_penal)
     df_answers.insert(0, 'score_penalizing', scores_penal)
     df_answers.to_csv(scoredAnswersCsvFileName, index=False)

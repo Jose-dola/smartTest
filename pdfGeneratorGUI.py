@@ -86,6 +86,7 @@ def run_popup():
     global format_file_path
     global numberOfExams
     global numberOfquestions
+    global PDFname
     if entry_number.get() == "":
         messagebox.showinfo("Error","You must fill the number of exams field")
         return
@@ -94,15 +95,20 @@ def run_popup():
     except ValueError:
         messagebox.showinfo("Error","You must fill the number of exams field with a valid integer number")
         return
+    if numberOfExams <= 0:
+        messagebox.showinfo("Error","You must fill the number of exams field with a positive integer number")
+        return
+    if entry_number_questions.get() == "":
+        messagebox.showinfo("Error","You must fill the number of questions field")
+        return
     try:
         numberOfquestions = int(entry_number_questions.get())
     except ValueError:
-        messagebox.showinfo("Error","You must fill the number of exams field with a valid integer number")
+        messagebox.showinfo("Error","You must fill the number of questions field with a valid integer number")
         return
-    if numberOfExams <= 0:
-        messagebox.showinfo("Error","You must fill the number of exams field with a valid integer number")
+    if numberOfquestions <= 0:
+        messagebox.showinfo("Error","You must fill the number of questions field with a positive integer number")
         return
-    global PDFname
     if entry_pdf.get() == "":
         messagebox.showinfo("Error","You must fill the PDF file name field")
         return
