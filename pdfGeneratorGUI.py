@@ -142,72 +142,84 @@ root = tk.Tk()
 root.title("smart test PDF generator")
 #root.geometry("400x300")  # Set the size of the window
 
+##################
+## Entry fields ##
+##################
+frame = tk.Frame(root)
+frame.pack(fill='x')
 # Label and entry for number of exams input
-label_number = tk.Label(root, text="How many exams do you want? (Enter a number)", font=("Arial", 12))
+label_number = tk.Label(frame, text="How many exams do you want? (Enter a number)", font=("Arial", 12))
 label_number.grid(row=0, column=0, padx=10, pady=10, sticky="w")
-entry_number = tk.Entry(root, font=("Arial", 12))
+entry_number = tk.Entry(frame, font=("Arial", 12))
 entry_number.grid(row=0, column=1, padx=10, pady=10, sticky="w")
-
-sep = ttk.Separator(root, orient="horizontal")
-sep.grid(row=1, column=0, columnspan=2, sticky="ew", pady=5)
-
 # Label and entry for number of exams input
-label_number_questions = tk.Label(root, text="How may questions per exam? (Enter a number)", font=("Arial", 12))
-label_number_questions.grid(row=2, column=0, padx=10, pady=10, sticky="w")
-entry_number_questions = tk.Entry(root, font=("Arial", 12))
-entry_number_questions.grid(row=2, column=1, padx=10, pady=10, sticky="w")
-
-sep = ttk.Separator(root, orient="horizontal")
-sep.grid(row=3, column=0, columnspan=2, sticky="ew", pady=5)
-
+label_number_questions = tk.Label(frame, text="How may questions per exam? (Enter a number)", font=("Arial", 12))
+label_number_questions.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+entry_number_questions = tk.Entry(frame, font=("Arial", 12))
+entry_number_questions.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 # Label and entry for pdf string input
-label_pdf = tk.Label(root, text="Enter the desired name for the generated PDF file:", font=("Arial", 12))
-label_pdf.grid(row=4, column=0, padx=10, pady=10, sticky="w")
-entry_pdf = tk.Entry(root, font=("Arial", 12))
-entry_pdf.grid(row=4, column=1, padx=10, pady=10, sticky="w")
+label_pdf = tk.Label(frame, text="Enter the desired name for the generated PDF file:", font=("Arial", 12))
+label_pdf.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+entry_pdf = tk.Entry(frame, font=("Arial", 12))
+entry_pdf.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+# separator
+ttk.Separator(root, orient="horizontal").pack(fill='x')
 
-sep = ttk.Separator(root, orient="horizontal")
-sep.grid(row=5, column=0, columnspan=2, sticky="ew", pady=5)
-
+#####################
+## File seclection ##
+#####################
+### exam selection
+##################
+# exam file selection
+frame = tk.Frame(root)
+frame.pack(fill='x')
 # Button for exam file selection
-button_exam_file = tk.Button(root, text="Select exam file", font=("Arial", 12), command=select_exam_file)
-button_exam_file.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+button_exam_file = tk.Button(frame, text="Select exam file", font=("Arial", 12), command=select_exam_file)
+button_exam_file.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 # Label to display the selected file
-label_exam_file = tk.Label(root, text="No file selected", font=("Arial", 10), wraplength=350, fg="gray")
-label_exam_file.grid(row=6, column=1, padx=10, pady=10, sticky="w")
-
-sep = ttk.Separator(root, orient="horizontal")
-sep.grid(row=7, column=0, columnspan=2, sticky="ew", pady=5)
-
+label_exam_file = tk.Label(frame, text="No file selected", font=("Arial", 10), wraplength=350, fg="gray")
+label_exam_file.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+# separator
+ttk.Separator(root, orient="horizontal").pack(fill='x')
+### format selection
+####################
+# format file selection
+frame = tk.Frame(root)
+frame.pack(fill='x')
 # Button for format file selection
-button_format_file = tk.Button(root, text="Select format file", font=("Arial", 12), command=select_format_file)
-button_format_file.grid(row=8, column=0, padx=10, pady=10, sticky="w")
+button_format_file = tk.Button(frame, text="Select format file", font=("Arial", 12), command=select_format_file)
+button_format_file.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 # Label to display the selected file
-label_format_file = tk.Label(root, text="No file selected", font=("Arial", 10), wraplength=350, fg="gray")
-label_format_file.grid(row=8, column=1, padx=10, pady=10, sticky="w")
-
-sep = ttk.Separator(root, orient="horizontal")
-sep.grid(row=9, column=0, columnspan=2, sticky="ew", pady=5)
-
+label_format_file = tk.Label(frame, text="No file selected", font=("Arial", 10), wraplength=350, fg="gray")
+label_format_file.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+# separator
+ttk.Separator(root, orient="horizontal").pack(fill='x')
+### template selection
+######################
+# template file selection
+frame = tk.Frame(root)
+frame.pack(fill='x')
 # Button for template file selection
-button_template_file = tk.Button(root, text="Select latex template file", font=("Arial", 12), command=select_template_file)
-button_template_file.grid(row=10, column=0, padx=10, pady=10, sticky="w")
+button_template_file = tk.Button(frame, text="Select latex template file", font=("Arial", 12), command=select_template_file)
+button_template_file.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 # Label to display the selected file
-label_template_file = tk.Label(root, text="No file selected", font=("Arial", 10), wraplength=350, fg="gray")
-label_template_file.grid(row=10, column=1, padx=10, pady=10, sticky="w")
+label_template_file = tk.Label(frame, text="No file selected", font=("Arial", 10), wraplength=350, fg="gray")
+label_template_file.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+# separator
+ttk.Separator(root, orient="horizontal").pack(fill='x', pady=10)
 
-sep = ttk.Separator(root, orient="horizontal")
-sep.grid(row=11, column=0, columnspan=2, sticky="ew", pady=5)
-
+#############
+## Buttons ##
+#############
 # Buttons
-button_frame = tk.Frame(root)
-button_frame.grid(row=12, column=0, columnspan=2, sticky="e")
+frame = tk.Frame(root)
+frame.pack(fill='x')
 # Button to submit the pdf string
-button_run = tk.Button(button_frame, text="RUN PDF CREATION", font=("Arial", 12), command=run_popup)
-button_run.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+button_run = tk.Button(frame, text="RUN PDF CREATION", font=("Arial", 12), command=run_popup)
+button_run.pack(side='right', padx=10, pady=10)
 # Button to exit
-button_exit = tk.Button(button_frame, text="EXIT", font=("Arial", 12), command=root.destroy)
-button_exit.grid(row=0, column=0, padx=10, pady=10, sticky="e")
+button_exit = tk.Button(frame, text="EXIT", font=("Arial", 12), command=root.destroy)
+button_exit.pack(side='right', padx=10, pady=10)
 
 # Run the application
 root.mainloop()
