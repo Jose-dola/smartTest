@@ -1,11 +1,11 @@
-Fill just after the colon (no space) or leave blank
+Fill just after the colon (no space) or leave blank. You can change the margin sizes. However, DO NOT REMOVE "cm". Just change the number. If you remove "cm", you must specify another unit of measurement using LATEX syntax. If the BOTTOMMARGIN is lower than 1.5cm, the page number may not appear. If the TOPMARGIN is lower than 2cm, there may be issues with the headers.
 TITLE1:
-TITLE2:
+TITLE2: 
 DATE:
 LEFTHEADER:
 CENTRALHEADER:
 INSTRUCTIONS:
-TOPMARGIN:
-BOTTOMMARGIN:
-LEFTMARGIN:
-RIGHTMARGIN:
+TOPMARGIN:2cm
+BOTTOMMARGIN:1.5cm
+LEFTMARGIN:0.6cm
+RIGHTMARGIN:0.6cm

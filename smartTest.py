@@ -202,8 +202,8 @@ def score_no_penalizing(goodAnswers, numberOfQuestions):
 # - codeColumn: the number of column where the code (random seed) is. If it is
 # at the first column it should be 1, second column should be 2, and so on
 # - firstAnswerColumn: the number of column where the answers start. If the first answer is
-# - scoredAnswersCsvFileName: desired name for the generated csv file with the scores
 # at th first column it should be 1, etc.
+# - scoredAnswersCsvFileName: desired name for the generated csv file with the scores
 # the function creates a new csv file named scoredAnswersCsvFileName
 def run_correction(examCSV, answersCSV, codeColumn, firstAnswerColumn, scoredAnswersCsvFileName):
     # answers csv to dataframe 
@@ -237,11 +237,135 @@ def run_correction(examCSV, answersCSV, codeColumn, firstAnswerColumn, scoredAns
         numberOfBlankAnswers.append(len(df_exam_shuffled)-goodAnswers-badAnswers)
         scores_penal.append(score_penalizing(goodAnswers, badAnswers, len(df_exam_shuffled), len(df_exam.columns)-2))
         scores_no_penal.append(score_no_penalizing(goodAnswers, len(df_exam_shuffled)))
-    df_answers.insert(len(df_answers.columns), 'number of good answers', numberOfGoodAnswers)
-    df_answers.insert(len(df_answers.columns), 'number of wrong answers', numberOfWrongAnswers)
-    df_answers.insert(len(df_answers.columns), 'number of blank answers', numberOfBlankAnswers)
+    df_answers.insert(len(df_answers.columns), 'number_of_good_answers', numberOfGoodAnswers)
+    df_answers.insert(len(df_answers.columns), 'number_of_wrong_answers', numberOfWrongAnswers)
+    df_answers.insert(len(df_answers.columns), 'number_of_blank_answers', numberOfBlankAnswers)
     df_answers.insert(0, 'score_no_penalizing', scores_no_penal)
     df_answers.insert(0, 'score_penalizing', scores_penal)
     df_answers.to_csv(scoredAnswersCsvFileName, index=False)
     print("DONE!")
 
+# The same as run_correction but cosidering tha the number of questions per exam is less than
+# the total number of questions 
+# input:
+# - nquestions: number of questions per exam
+# - examCSV: exam csv file
+# - answersCSV: answers csv file
+# - codeColumn: the number of column where the code (random seed) is. If it is
+# at the first column it should be 1, second column should be 2, and so on
+# - firstAnswerColumn: the number of column where the answers start. If the first answer is
+# at th first column it should be 1, etc.
+# - scoredAnswersCsvFileName: desired name for the generated csv file with the scores
+# the function creates a new csv file named scoredAnswersCsvFileName
+def run_correction_reducingNumberOfQuestionsPerExam(nquestions, examCSV, answersCSV, codeColumn, firstAnswerColumn, scoredAnswersCsvFileName):
+    # answers csv to dataframe 
+    df_answers = pd.read_csv(answersCSV, sep=',')
+    df_answers = df_answers.fillna('-1')
+    # exam csv to dataframe
+    df_exam = exam_to_df(examCSV)
+    #df_exam = smartTest.shuffle_df(df_exam, codeColumn)
+    # making the correction
+    scores_penal = []
+    scores_no_penal = []
+    numberOfGoodAnswers = []
+    numberOfWrongAnswers = []
+    numberOfBlankAnswers = []
+    for index, row in df_answers.iterrows():
+        df_exam_shuffled = shuffle_df(df_exam, int(row.iloc[codeColumn-1]))
+        goodAnswers = 0
+        badAnswers = 0
+        i=0
+        for answer in row[firstAnswerColumn-1:firstAnswerColumn-1+len(df_exam)]:
+            formatedAnswer = int(dict[str(answer).strip()])
+            correctAnswer  = int(df_exam_shuffled.iloc[i]['correct']) 
+            if formatedAnswer != -1:
+                if formatedAnswer == correctAnswer:
+                    goodAnswers += 1
+                else:
+                    badAnswers += 1 
+            i+=1
+        numberOfGoodAnswers.append(goodAnswers)
+        numberOfWrongAnswers.append(badAnswers)
+        numberOfBlankAnswers.append(int(nquestions)-goodAnswers-badAnswers)
+        scores_penal.append(score_penalizing(goodAnswers, badAnswers, int(nquestions), len(df_exam.columns)-2))
+        scores_no_penal.append(score_no_penalizing(goodAnswers, int(nquestions)))
+    df_answers.insert(len(df_answers.columns), 'number_of_good_answers', numberOfGoodAnswers)
+    df_answers.insert(len(df_answers.columns), 'number_of_wrong_answers', numberOfWrongAnswers)
+    df_answers.insert(len(df_answers.columns), 'number_of_blank_answers', numberOfBlankAnswers)
+    df_answers.insert(0, 'score_no_penalizing', scores_no_penal)
+    df_answers.insert(0, 'score_penalizing', scores_penal)
+    df_answers.to_csv(scoredAnswersCsvFileName, index=False)
+    print("DONE!")
+
+# The same as run_correction_reducingNumberOfQuestionsPerExam but writing the results (scores) of each student
+# in the apropiate row according to a given file
+# input:
+# - nquestions: number of questions per exam
+# - examCSV: exam csv file (columns separated by ;)
+# - answersCSV: answers csv file (columns separated by ,)
+# - studentsCSV: students csv file, where the scores will be written (columns separated by ;)
+# - answersCol: the column number in answersCSV file to match students between answersCSV file
+# and studentsCSV file. If it is at the first column it should be 1, second column should be 2, and so on
+# - studentsCol: the column number in studentsCSV file to match students between answersCSV file
+# and studentsCSV file. If it is at the first column it should be 1, second column should be 2, and so on
+# - codeColumn: the number of column where the code (random seed) is. If it is
+# at the first column it should be 1, second column should be 2, and so on
+# - firstAnswerColumn: the number of column where the answers start. If the first answer is
+# at th first column it should be 1, etc.
+# - scoredAnswersCsvFileName: desired name for the generated csv file with the scores
+# the function creates a new csv file named scoredAnswersCsvFileName. The content and the rows order is
+# according to studentsCSV file, the scores are added according to the answers given in te answersCSV file
+# -1 in the scores means that the student did not do the exam, i.e., there is no answer for this student
+# in the answersCSV file (no match between columnAnswers and columnStudents)
+def run_correction_students_file(nquestions, examCSV, answersCSV, studentsCSV, answersCol, studentsCol, codeColumn, firstAnswerColumn, scoredAnswersCsvFileName):
+    # answers csv to dataframe 
+    df_answers = pd.read_csv(answersCSV, sep=',')
+    df_answers = df_answers.fillna('-1')
+    df_students = pd.read_csv(studentsCSV, sep=';')
+    # exam csv to dataframe
+    df_exam = exam_to_df(examCSV)
+    # making the correction
+    studentsMatchingColumn = df_students.iloc[:,studentsCol-1]
+    scores_penal = [-1 for i in range(len(df_students))]
+    scores_no_penal = [-1 for i in range(len(df_students))]
+    numberOfGoodAnswers = [-1 for i in range(len(df_students))]
+    numberOfWrongAnswers = [-1 for i in range(len(df_students))]
+    numberOfBlankAnswers = [-1 for i in range(len(df_students))]
+    for index, row in df_answers.iterrows():
+        df_exam_shuffled = shuffle_df(df_exam, int(row.iloc[codeColumn-1]))
+        goodAnswers = 0
+        badAnswers = 0
+        i=0
+        for answer in row[firstAnswerColumn-1:firstAnswerColumn-1+len(df_exam)]:
+            formatedAnswer = int(dict[str(answer).strip()])
+            correctAnswer  = int(df_exam_shuffled.iloc[i]['correct']) 
+            if formatedAnswer != -1:
+                if formatedAnswer == correctAnswer:
+                    goodAnswers += 1
+                else:
+                    badAnswers += 1 
+            i+=1
+        # finding the students in the students dataframe
+        matchingCell = row.iloc[answersCol-1]
+        matchingIndexList = studentsMatchingColumn.index[studentsMatchingColumn == matchingCell].to_list()
+        if len(matchingIndexList) == 0:
+            raise ValueError(f"There is no student equal to {matchingCell} in the students csv file")
+        if len(matchingIndexList) > 1:
+            raise ValueError(f"There is more than one student equal to {matchingCell} in the students csv file")
+        #print(f"matchingCell: {matchingCell}")
+        #print(f"matchingIndexList: {matchingIndexList}")
+        #print(f"len(matchingIndexList): {len(matchingIndexList)}")
+        matchingIndex =  matchingIndexList[0]
+        # adding the scores
+        numberOfGoodAnswers[matchingIndex] = goodAnswers
+        numberOfWrongAnswers[matchingIndex] =  badAnswers
+        numberOfBlankAnswers[matchingIndex] = int(nquestions)-goodAnswers-badAnswers
+        scores_penal[matchingIndex] = score_penalizing(goodAnswers, badAnswers, int(nquestions), len(df_exam.columns)-2)
+        scores_no_penal[matchingIndex] = score_no_penalizing(goodAnswers, int(nquestions))
+    df_students.insert(len(df_students.columns), 'number_of_good_answers', numberOfGoodAnswers)
+    df_students.insert(len(df_students.columns), 'number_of_wrong_answers', numberOfWrongAnswers)
+    df_students.insert(len(df_students.columns), 'number_of_blank_answers', numberOfBlankAnswers)
+    df_students.insert(len(df_students.columns), 'score_no_penalizing', scores_no_penal)
+    df_students.insert(len(df_students.columns), 'score_penalizing', scores_penal)
+    df_students.to_csv(scoredAnswersCsvFileName, sep=';', index=False)
+    print("DONE!")
